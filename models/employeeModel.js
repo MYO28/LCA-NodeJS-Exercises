@@ -10,21 +10,22 @@ const getEmployeeById = async (id) => {
   return rows[0];
 };
 
-const createEmployee = async (first_name, last_name, email, department_id) => {
-  const [result] = await pool.execute("INSERT INTO employees (first_name, last_name, email, department_id) VALUES (?, ?, ?, ?)", [
-    first_name,
-    last_name,
+const createEmployee = async (name, email, department_id) => {
+  const [result] = await pool.execute("INSERT INTO employees (name, email, department_id) VALUES (?, ?, ?)", [
+    name,
     email,
     department_id,
   ]);
-  return { id: result.insertId, first_name, last_name, email, department_id };
+  return { id: result.insertId, name, email, department_id };
 };
 
-const updateEmployee = async (id, first_name, last_name, email, department_id) => {
-  const [result] = await pool.execute(
-    "UPDATE employees SET first_name = ?, last_name = ?, email = ?, department_id = ? WHERE id = ?",
-    [first_name, last_name, email, department_id, id],
-  );
+const updateEmployee = async (id, name, email, department_id) => {
+  const [result] = await pool.execute("UPDATE employees SET name = ?, email = ?, department_id = ? WHERE id = ?", [
+    name,
+    email,
+    department_id,
+    id,
+  ]);
   return result.affectedRows > 0;
 };
 
@@ -35,7 +36,7 @@ const deleteEmployee = async (id) => {
 
 const getEmployeesByLocation = async (location) => {
   const [rows] = await pool.execute(
-    `SELECT e.id, e.first_name, e.last_name, e.email, d.department_name, d.location 
+    `SELECT e.id, e.name, e.email, d.department_name, d.location 
      FROM employees e 
      INNER JOIN departments d ON e.department_id = d.id 
      WHERE d.location = ?`,
